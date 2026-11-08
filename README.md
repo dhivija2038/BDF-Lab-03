@@ -1,116 +1,197 @@
-# Lab 3: REST API, Query Parameters, Validation, Debugging
+# Lab 03: REST API, Query Parameters, Validation and Debugging
 
-**Name:** N Dhivija  
-**Registration Number:** 252U1R6112  
-**Section:** S02
+## Student Details
 
-## 1. Project Description
+- **Name:** N Dhivija
+- **Registration Number:** 252U1R6112
+- **Lab:** Backend Development Fundamentals – Lab 03
 
-This lab focuses on developing a REST API using Node.js, Express.js and SQLite. The application manages book records and supports retrieving, searching, sorting, filtering, adding, updating and deleting books.
+---
 
-## 2. Live Link
+## 1. Project Overview
 
-Not deployed yet. The application was tested locally using Postman.
+This lab focuses on developing REST APIs using Node.js, Express.js and SQLite. The project implements CRUD operations on a Books database along with query parameters, searching, sorting, pagination, price filtering and input validation.
 
-**Local URL:** `http://localhost:3000/`
+The application allows users to retrieve, add, update and delete book records through HTTP requests.
 
-## 3. Technologies Used
+## 2. Technologies Used
 
 - Node.js
 - Express.js
 - SQLite
+- SQLite3
 - JavaScript
 - Postman
-- VS Code
+- Git and GitHub
+- Render (Deployment)
+- Visual Studio Code
 
-## 4. Installation and Execution
-
-### Install dependencies
-
-```bash
-npm install
-```
-
-### Start the server
-
-```bash
-node server.js
-```
-
-The server runs at:
+## 3. Project Structure
 
 ```text
-http://localhost:3000/
+lab-03/
+│
+├── screenshots/
+│   ├── get-all-books.png
+│   ├── search-books.png
+│   ├── sort-books.png
+│   ├── pagination-books.png
+│   ├── price-filter-books.png
+│   ├── post-validation-error.png
+│   ├── post-success.png
+│   ├── verify-added-book.png
+│   ├── put-update-book.png
+│   ├── verify-updated-book.png
+│   ├── delete-book.png
+│   ├── not-found-error.png
+│   ├── verify-deleted-book.png
+│   ├── port-conflict-error.png
+│   ├── wrong-import-path.png
+│   ├── table-name-error.png
+│   └── missing-await-error.png
+│
+├── books.db
+├── database.js
+├── package.json
+├── package-lock.json
+├── server.js
+├── README.md
+└── .gitignore
 ```
 
-**Environment variable:** `PORT` (optional; defaults to 3000).
+## 4. Database Details
+
+The project uses an SQLite database named `books.db`.
+
+**Table Name:** `book`
+
+| Column | Description |
+|---|---|
+| id | Unique book ID |
+| title | Book title |
+| author | Author name |
+| price | Book price |
+| pages | Number of pages |
+
+The database connection is established using the `sqlite` and `sqlite3` packages.
 
 ## 5. API Endpoints
 
-| Method | Endpoint | Description |
+The following REST API endpoints are implemented:
+
+| HTTP Method | Endpoint | Operation |
 |---|---|---|
 | GET | `/books/` | Retrieve all books |
-| GET | `/books/?search_q=value` | Search books by title |
-| GET | `/books/?order_by=price&order=ASC` | Sort books |
-| GET | `/books/?limit=5&offset=0` | Retrieve books using pagination |
-| GET | `/books/?min_price=100&max_price=500` | Filter books by price |
 | GET | `/books/:bookId/` | Retrieve a single book |
 | POST | `/books/` | Add a new book |
 | PUT | `/books/:bookId/` | Update an existing book |
 | DELETE | `/books/:bookId/` | Delete a book |
 
-## 6. Screenshots
+### Query Parameters
 
-All screenshots are stored in the `screenshots/` folder.
+The GET `/books/` endpoint supports the following query parameters:
 
-### GET Operations
+| Parameter | Description |
+|---|---|
+| search_q | Search books by title |
+| order_by | Sort using a permitted column |
+| order | Sort in ASC or DESC order |
+| limit | Maximum number of records |
+| offset | Number of records to skip |
+| min_price | Minimum book price |
+| max_price | Maximum book price |
 
-![Get All Books](screenshots/get-all-books.png)
+**Example Requests:**
 
-![Search Books](screenshots/search-books.png)
+Search books:
+```text
+GET /books/?search_q=Python
+```
 
-![Sort Books](screenshots/sort-books.png)
+Sort books:
+```text
+GET /books/?order_by=price&order=DESC
+```
 
-![Pagination Books](screenshots/pagination-books.png)
+Pagination:
+```text
+GET /books/?limit=5&offset=0
+```
 
-![Price Filter Books](screenshots/price-filter-books.png)
+Price filtering:
+```text
+GET /books/?min_price=100&max_price=500
+```
 
-### POST Operations
+## 6. Input Validation and Error Handling
 
-![Post Validation Error](screenshots/post-validation-error.png)
+Input validation is implemented to ensure that the API receives valid data.
 
-![Post Success](screenshots/post-success.png)
+The following validations are performed:
 
-![Verify Added Book](screenshots/verify-added-book.png)
+- Title and author must not be empty.
+- Price must be a valid numeric value.
+- Pages must be a positive integer when provided.
+- Invalid sorting columns are rejected.
+- Sorting order must be ASC or DESC.
+- Limit and offset must contain valid integer values.
+- Minimum price must not exceed maximum price.
+- A 404 response is returned when a requested book does not exist.
+- Invalid JSON requests are handled with an appropriate error response.
+- Internal server errors are handled using try-catch blocks.
 
-### PUT Operations
+## 7. Testing Using Postman
 
-![Put Update Book](screenshots/put-update-book.png)
+All API operations were tested using Postman.
 
-![Verify Updated Book](screenshots/verify-updated-book.png)
+The following test cases were performed:
 
-### DELETE Operations
+1. Retrieving all books.
+2. Searching books using query parameters.
+3. Sorting books by different columns.
+4. Implementing pagination using limit and offset.
+5. Filtering books based on price.
+6. Adding a new book with valid data.
+7. Checking validation errors for invalid input.
+8. Updating an existing book.
+9. Deleting a book.
+10. Verifying the updated and deleted records.
+11. Testing not-found error responses.
 
-![Delete Book](screenshots/delete-book.png)
+Screenshots of the API requests and responses are available in the `screenshots` folder.
 
-![Not Found Error](screenshots/not-found-error.png)
+## 8. Challenges Faced
 
-![Verify Deleted Book](screenshots/verify-deleted-book.png)
+During the development process, I encountered some errors related to incorrect import paths, database table names, missing await statements and port conflicts. I resolved these issues by checking the file paths, verifying SQL table names, using async/await correctly and managing the server process.
 
-### Debugging Exercises
+These debugging experiences helped me understand common backend development problems and how to solve them.
 
-![Port Conflict Error](screenshots/port-conflict-error.png)
+## 9. Learning Outcomes
 
-![Wrong Import Path](screenshots/wrong-import-path.png)
+Through this lab, I learned how to develop REST APIs using Express.js, handle different HTTP methods, connect an SQLite database, perform CRUD operations, implement query parameters, search and sort records, apply pagination and price filtering, validate user inputs and handle errors.
 
-![Table Name Error](screenshots/table-name-error.png)
+I also gained practical experience in testing APIs using Postman, managing code through Git and GitHub, and deploying a Node.js application using Render.
 
-![Missing Await Error](screenshots/missing-await-error.png)
+## 10. Live Deployment
 
-## 7. Challenges Faced
+The application is deployed using Render.
 
-During this lab, I encountered errors such as port conflicts, incorrect import paths, table name mismatches and missing await statements. I resolved these errors by checking the running processes, correcting file paths, verifying SQL table names and using async/await properly.
+**Live Application URL:**
 
-## 8. Learning Outcomes
+https://bdf-lab-03-cmji.onrender.com
 
-Through this lab, I learned how to develop REST APIs, handle HTTP methods, use query parameters, perform SQLite database operations, validate user input, implement pagination and filtering, and debug common backend development errors.
+**Test API:**
+
+https://bdf-lab-03-cmji.onrender.com/books/
+
+## 11. GitHub Repository
+
+**GitHub Repository:**
+
+https://github.com/dhivija2038/BDF-Lab-03
+
+---
+
+**Conclusion**
+
+This lab provided practical experience in backend development by building and testing REST APIs with Node.js, Express.js and SQLite. It improved my understanding of database connectivity, CRUD operations, query parameters, validation, debugging, API testing and application deployment.
